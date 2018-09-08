@@ -5,6 +5,7 @@ struct Arnold_Light_Lister
 (
 	aLights = #(),
 	ui,
+	aLight_types = #("Point","Distant","Spot","Quad","Disc","Cylinder","SkyDome","Photo..","Mesh"),
 	
 	fn sort_by_name a b =
 	(
@@ -26,17 +27,24 @@ struct Arnold_Light_Lister
 		select (this.aLights[id])
 	),
 	
+	fn lgt_change_type id type_id =
+	(
+		this.aLights[id].shapeType = (type_id - 1)
+	),
+	
 	fn buil_light_param_rollout id =
 	(
-		local rci = rolloutCreator "arnold_light_rollout" (this.aLights[id].name) width:154 height:92
-		
-		
+		local rci = rolloutCreator ("arnold_light_rollout_" + id as string) (this.aLights[id].name) width:154 height:92
+		local shape_type_selection = (this.aLights[id].shapeType + 1) as string
 		rci.begin()
 		rci.addControl #label "lbl_on" "On" paramStr:"pos:[34,9] width:20 height:18 align:#left"
 		rci.addControl #checkbox "chk_on" "" paramStr:("pos:[33,26] width:18 height:20 align:#left checked:" + this.aLights[id].on as string)
-		rci.addControl #button "btn_select" "" paramStr:"pos:[8,7] width:17 height:38 align:#left"
+		rci.addControl #button "btn_select" "" paramStr:"pos:[8,7] width:17 height:37 align:#left"
+		rci.addControl #label "lbl_type" "Shape Type" paramStr:"pos:[58,9] width:66 height:14 align:#left"
+		rci.addControl #dropdownList "ddl_type" "" paramStr:("pos:[56,30] width:84 height:21 align:#left items:(" + (this.aLight_types as string) + ") selection:" + shape_type_selection + "")
 		
 		rci.addHandler "chk_on" #changed paramStr:"val" codeStr:("Arnold_Light_Lister.lgt_switch " + id as string + " val")
+		rci.addHandler "ddl_type" #selected paramStr:"selection" codeStr:("Arnold_Light_Lister.lgt_change_type " + id as string + " selection")
 		rci.addHandler "btn_select" #pressed filter:on codeStr:("Arnold_Light_Lister.lgt_select " + id as string)
 		rci.end()
 		return rci.def
@@ -51,8 +59,9 @@ struct Arnold_Light_Lister
 		(
 			for i=1 to count do 
 			(
-				print i
+				
 				sub_rollout_ = this.buil_light_param_rollout i
+				sub_rollout_.ddl_type.items = this.aLight_types
 				addSubRollout (this.ui.sub_rol_lights) sub_rollout_ rolledUp:false
 			)
 		)
@@ -80,7 +89,7 @@ rollout Arnold_Light_Lister_UI "Arnold Light Lister" width:1074 height:500
 	)
 )
 
-try(destroyDialog Arnold_Light_Lister_UI)catch()
+try(Arnold_Light_Lister.ui = undefined; destroyDialog Arnold_Light_Lister_UI)catch()
 Arnold_Light_Lister = Arnold_Light_Lister()
 Arnold_Light_Lister.Init()
 createDialog Arnold_Light_Lister_UI
@@ -92,6 +101,8 @@ rollout unnamedRollout "Untitled" width:1024 height:92
 	checkbox 'chk_on' "" pos:[33,26] width:18 height:20 align:#left
 	label 'lbl2' "On" pos:[34,9] width:20 height:18 align:#left
 	button 'btn_select' "" pos:[8,7] width:17 height:38 align:#left
+	label 'lbl9d' "Type" pos:[58,9] width:66 height:14 align:#left
+	dropdownList 'ddl1' "" pos:[56,31] width:84 height:21 align:#left
 	
 	spinner 'spn1' "" pos:[147,31] width:68 height:16 align:#left
 	label 'lbl3' "Intensity" pos:[149,11] width:66 height:14 align:#left
@@ -105,8 +116,7 @@ rollout unnamedRollout "Untitled" width:1024 height:92
 	label 'lbl8' "Samples" pos:[478,11] width:66 height:14 align:#left
 	spinner 'spn5' "" pos:[550,31] width:79 height:16 range:[0,100,0] align:#left
 	label 'lbl9' "Volume Samples" pos:[552,11] width:83 height:14 align:#left
-	label 'lbl9d' "Type" pos:[58,9] width:66 height:14 align:#left
-	dropdownList 'ddl1' "" pos:[56,31] width:84 height:21 align:#left
+	
 )
 
 
