@@ -1,5 +1,5 @@
-macroScript MCR_arnold_light_lister
-ButtonText:"Arnold Light Lister"
+macroScript Macro_arnold_light_lister
+ButtonText:"ALgt_L"
 category:"Arnold Utilities"
 toolTip:"An interface wich allows you yo control some of the parameters of the arnold light in the scene."
 (
