@@ -138,10 +138,10 @@ struct Arnold_Light_Lister
 
 global Arnold_Light_Lister = Arnold_Light_Lister()
 
-rollout Arnold_Light_Lister_UI "Arnold Light Lister " width:984 height:450
+rollout Arnold_Light_Lister_UI "Arnold Light Lister " width:984 height:550
 (
 	button 'btn_refresh' "Refresh" pos:[10,7] width:65 height:22 align:#left
-	subRollout 'sub_rol_lights' "Found Files" pos:[10,36] width:964 height:445 align:#left
+	subRollout 'sub_rol_lights' "Found Files" pos:[10,36] width:964 height:500 align:#left
 	on btn_refresh pressed do
 	(
 		for sub_rol in sub_rol_lights.rollouts do
