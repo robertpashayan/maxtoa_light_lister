@@ -62,46 +62,53 @@ struct Arnold_Light_Lister
 		this.aLights[id].userOptions = val
 	),
 	
+	fn lgt_change_name id val =
+	(
+		this.aLights[id].name = val
+		this.ui.sub_rol_lights.rollouts[id]
+	),
+	
 	fn buil_light_param_rollout id =
 	(
-		local rci = rolloutCreator ("arnold_light_rollout_" + id as string) (this.aLights[id].name) width:944 height:92
+		local rci = rolloutCreator ("arnold_light_rollout_" + id as string) "" width:1188 height:51
 		local shape_type_selection = (this.aLights[id].shapeType + 1) as string
 		local intensity = this.aLights[id].intensity
 		local exposure = this.aLights[id].exposure
-		local nrm_en = this.aLights[id].normalize
 		local samples = this.aLights[id].samples
 		local volume_samples = this.aLights[id].volume_samples
 		local usr_opt_text = this.aLights[id].userOptions
 		if usr_opt_text == undefined then usr_opt_text = ""
 		
 		rci.begin()
-		rci.addControl #label "lbl_on" "On" paramStr:"pos:[34,9] width:20 height:18 align:#left"
-		rci.addControl #checkbox "chk_on" "" paramStr:("pos:[33,26] width:18 height:20 align:#left checked:" + this.aLights[id].on as string)
-		rci.addControl #button "btn_select" "" paramStr:"pos:[8,7] width:17 height:37 align:#left"
-		rci.addControl #label "lbl_type" "Shape Type" paramStr:"pos:[58,9] width:66 height:14 align:#left"
-		rci.addControl #dropdownList "ddl_type" "" paramStr:("pos:[56,30] width:84 height:21 align:#left items:(" + (this.aLight_types as string) + ") selection:" + shape_type_selection + "")
-		rci.addControl #label "lbl_intensity" "Intensity"  paramStr:"pos:[149,11] width:66 height:14 align:#left"
-		rci.addControl #spinner "spn_intensity" ""  paramStr:("pos:[147,31] width:68 height:16 align:#left range:[0,100000," + intensity as string + "] scale:(0.01)")
-		rci.addControl #label "lbl_exposure" "Exposure" paramStr:("pos:[223,11] width:66 height:14 align:#left")
-		rci.addControl #spinner "spn_exposure" "" paramStr:("pos:[221,31] width:68 height:16 range:[0,100000," + exposure as string + "] scale:(0.01) align:#left")
-		rci.addControl #label "lbl_nrm_en" "Normalize Energy" paramStr:(" pos:[296,11] width:87 height:18 align:#left")
-		rci.addControl #checkbox "chk_nrm_en" "" paramStr:(" pos:[332,28] width:18 height:20 align:#left checked:" + nrm_en as string)
-		rci.addControl #label "lbl_samples" "Samples" paramStr:(" pos:[395,11] width:66 height:14 align:#left")
-		rci.addControl #spinner "spn_samples" "" paramStr:(" pos:[393,31] width:68 height:16 range:[0,1000000," + samples as string + "] scale:1 align:#left")
-		rci.addControl #label "lbl_vol_samples" "Volume Samples" paramStr:(" pos:[469,11] width:83 height:14 align:#left")
-		rci.addControl #spinner "spn_vol_samples" "" paramStr:(" pos:[467,31] width:79 height:16 range:[0,1000000," + volume_samples as string + "] scale:1 align:#left")
-		rci.addControl #label "lbl_usr_op" "User Options" paramStr:(" pos:[556,11] width:83 height:14 align:#left")
-		rci.addControl #edittext "edt_usr_op" "" paramStr:(" pos:[552,27] width:381 height:21 align:#left text:\"" + usr_opt_text + "\"")
+		
+		rci.addControl #label "lbl_name" "Light Name:" paramStr:("pos:[8,1] width:83 height:14 align:#left")
+		rci.addControl #edittext "edt_name" "" paramStr:("pos:[2,20] width:252 height:20 align:#left text:\"" + (this.aLights[id].name) + "\"")
+		rci.addControl #button "btn_select" "Select" paramStr:"pos:[260,2] width:65 height:40 align:#left"
+		rci.addControl #checkButton "chk_on" "ON" paramStr:("pos:[331,2] width:45 height:40 align:#left checked:" + this.aLights[id].on as string)
+		rci.addControl #label "lbl_type" "Shape Type" paramStr:"pos:[386,1] width:66 height:14 align:#left"
+		rci.addControl #dropdownList "ddl_type" "" paramStr:("pos:[384,20] width:84 height:21 align:#left items:(" + (this.aLight_types as string) + ") selection:" + shape_type_selection + "")
+		rci.addControl #label "lbl_intensity" "Intensity"  paramStr:"pos:[481,1] width:55 height:14 align:#left"
+		rci.addControl #spinner "spn_intensity" ""  paramStr:("pos:[475,21] width:68 height:16 align:#left range:[0,100000," + intensity as string + "] scale:(0.01)")
+		rci.addControl #label "lbl_exposure" "Exposure" paramStr:(" pos:[556,1] width:55 height:14 align:#left")
+		rci.addControl #spinner "spn_exposure" "" paramStr:("pos:[549,21] width:68 height:16 range:[0,100000," + exposure as string + "] scale:(0.01) align:#left")
+		rci.addControl #checkbutton "ckb_normalize" "Normalize Energy" paramStr:("pos:[623,2] width:100 height:37 align:#left checked:" + this.aLights[id].normalize as string)
+		rci.addControl #label "lbl_samples" "Samples" paramStr:("pos:[739,1] width:50 height:14 align:#left")
+		rci.addControl #spinner "spn_samples" "" paramStr:("pos:[729,21] width:68 height:16 range:[0,1000000," + samples as string + "] scale:1 align:#left")
+		rci.addControl #label "lbl_vol_samples" "Volume Samples" paramStr:("pos:[804,1] width:83 height:14 align:#left")
+		rci.addControl #spinner "spn_vol_samples" "" paramStr:("pos:[804,21] width:79 height:16 range:[0,1000000," + volume_samples as string + "] scale:1 align:#left")
+		rci.addControl #label "lbl_usr_op" "User Options" paramStr:("pos:[893,1] width:83 height:14 align:#left")
+		rci.addControl #edittext "edt_usr_op" "" paramStr:(" pos:[888,20] width:288 height:20 align:#left text:\"" + usr_opt_text + "\"")
 		
 		rci.addHandler "chk_on" #changed paramStr:"val" codeStr:("Arnold_Light_Lister.lgt_switch " + id as string + " val")
 		rci.addHandler "ddl_type" #selected paramStr:"selection" codeStr:("Arnold_Light_Lister.lgt_change_type " + id as string + " selection")
 		rci.addHandler "btn_select" #pressed filter:on codeStr:("Arnold_Light_Lister.lgt_select " + id as string)
 		rci.addHandler "spn_intensity" #changed paramStr:"val" codeStr:("Arnold_Light_Lister.lgt_change_intensity " + id as string + " val")
 		rci.addHandler "spn_exposure" #changed paramStr:"val" codeStr:("Arnold_Light_Lister.lgt_change_exposure " + id as string + " val")
-		rci.addHandler "chk_nrm_en" #changed paramStr:"val" codeStr:("Arnold_Light_Lister.lgt_change_normalize " + id as string + " val")
+		rci.addHandler "ckb_normalize" #changed paramStr:"val" codeStr:("Arnold_Light_Lister.lgt_change_normalize " + id as string + " val")
 		rci.addHandler "spn_samples" #changed paramStr:"val" codeStr:("Arnold_Light_Lister.lgt_change_samples " + id as string + " val")
 		rci.addHandler "spn_vol_samples" #changed paramStr:"val" codeStr:("Arnold_Light_Lister.lgt_change_volume_samples " + id as string + " val")
 		rci.addHandler "edt_usr_op" #changed paramStr:"val" codeStr:("Arnold_Light_Lister.lgt_change_usr_options " + id as string + " val")
+		rci.addHandler "edt_name" #changed paramStr:"val" codeStr:("Arnold_Light_Lister.lgt_change_name " + id as string + " val")
 		rci.end()
 		return rci.def
 	),
@@ -138,10 +145,10 @@ struct Arnold_Light_Lister
 
 global Arnold_Light_Lister = Arnold_Light_Lister()
 
-rollout Arnold_Light_Lister_UI "Arnold Light Lister " width:984 height:550
+rollout Arnold_Light_Lister_UI "Arnold Light Lister " width:1210 height:550
 (
 	button 'btn_refresh' "Refresh" pos:[10,7] width:65 height:22 align:#left
-	subRollout 'sub_rol_lights' "Found Files" pos:[10,36] width:964 height:500 align:#left
+	subRollout 'sub_rol_lights' "Found Files" pos:[10,36] width:1198 height:500 align:#left
 	on btn_refresh pressed do
 	(
 		for sub_rol in sub_rol_lights.rollouts do
